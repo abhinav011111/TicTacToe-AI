@@ -171,6 +171,7 @@ function App() {
             <Board board={board} handleClick = {handleClick} />
             <Typography style={{color:"rgb(226 209 209)", margin:"20px",textAlign:"center"}} variant="h4" component="h4" > {msg} </Typography>
           </div>
+          
           <div style={{ display: 'flex', justifyContent: 'center' }}>
           {newGame?<Button style={style.btn} variant="contained" onClick={startNewGame} >NewGame</Button>:''}
           </div>
