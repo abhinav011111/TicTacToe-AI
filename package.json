@@ -1,6 +1,5 @@
 {
-  "homepage": "http://kk-007.github.io/tic-tac-toe-minmax-react",
-  "name": "tic-tac-toe-minmax-react",
+  "name": "p1",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
