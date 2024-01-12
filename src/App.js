@@ -146,9 +146,6 @@ function App() {
 
     handleWinner();
 
-    if (count === 9) {
-      setMsg("Start New Game");
-    }
   };
 
   let style={
