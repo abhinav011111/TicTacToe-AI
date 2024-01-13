@@ -12,16 +12,17 @@ const SCORE = {
   TIE: 0
 };
 const getIJ =  [{i:0,j:0},{i:0,j:1},{i:0,j:2},{i:1,j:0},{i:1,j:1},{i:1,j:2},{i:2,j:0},{i:2,j:1},{i:2,j:2}];
+const checkTurn = "It's Your Turn";
 
 function App() {
   const [board, setBoard] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
   const [msg, setMsg] = useState("It's Your Turn");
-  const [count, setCount] = useState(0);
-  const [newGame, setNewGame] = useState(false);
+  const [count, setCount] = useState(-1);
+  const [countmax, setCountmax] = useState(4);
 
   const handleClick = (e) => {
     const { i, j } = getIJ[e];
-    if(msg!=="It's Your Turn" || board[i][j]!=='') return;
+    if(count===-1 || msg!==checkTurn || board[i][j]!=='') return;
     const newBoard = [...board];
     newBoard[i][j] = human;
     setBoard(newBoard);
@@ -30,7 +31,7 @@ function App() {
     handleWinner();
     console.log(count);
 
-    if (count < 4) {
+    if (count < countmax) {
       aiTurn();
     }
   };
@@ -41,15 +42,12 @@ function App() {
     switch (winner) {
       case ai:
         setMsg("AI Win");
-        setNewGame(true);
         break;
       case human:
         setMsg("You Beat AI");
-        setNewGame(true);
         break;
       case 'TIE':
         setMsg("Match Draw");
-        setNewGame(true);
         break;
       default:
         // No winner yet
@@ -60,8 +58,8 @@ function App() {
   const startNewGame = () => {
     setBoard([['', '', ''], ['', '', ''], ['', '', '']]);
     setMsg("It's Your Turn");
-    setCount(0);
-    setNewGame(false);
+    setCount(-1);
+    setCountmax(4);
   };
 
   const checkWin = (board) => {
@@ -151,6 +149,12 @@ function App() {
     }
   };
 
+  const aiFirst = () =>{
+    setCountmax(5);
+    setCount(0);
+    aiTurn();
+  }
+
   let style={
     btn:{
       textAlign:"center",
@@ -158,24 +162,34 @@ function App() {
       background:"#d7aeff",
       color:"#3e2655",
       fontSize:"larger",
-    fontWeight:"600"
+      fontWeight:"600"
     }
   }
     
 
   return (
-    <div style={{padding: 5 }} >
+    <div style={{padding: 5, display: 'flex'}} >
+      <div style={{width:'60%'}}>
         <Container  maxWidth="sm">
           <Typography variant="h2" align="center"  gutterBottom> TicTacToe </Typography>
-          <div>
-            <Board board={board} handleClick = {handleClick} />
-            <Typography style={{color:"rgb(226 209 209)", margin:"10px",textAlign:"center"}} variant="h4" component="h4" > {msg} </Typography>
-          </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {newGame?<Button style={style.btn} variant="contained" onClick={startNewGame} >NewGame</Button>:''}
-          </div>
+          <Board board={board} handleClick = {handleClick} />
+          <Typography style={{color:"rgb(226 209 209)", margin:"10px",textAlign:"center"}} variant="h4" component="h4" > {msg} </Typography>
         </Container>
+      </div>      
+            
+          
+          <div style={{ display:'flex', flexDirection:'column' ,width:'30%', margin:'auto'}}>
+                <div style={{margin:'auto', padding:'60px'}} >
+                <Typography variant="h5" align="center"  gutterBottom> Choose First Move </Typography>
+                <div style={{display: 'flex'}}>
+                  {count===-1 && <Button style={style.btn} variant="contained" onClick={()=>{setCount(0);}} >Me</Button>}
+                  {count===-1 &&<Button style={style.btn} variant="contained" onClick={aiFirst} >AI</Button>}
+                </div>
+                </div>
+  
+              <Button style={style.btn} variant="contained" onClick={startNewGame} >NewGame</Button>
+          </div>
+        
     </div>
   )
 }
