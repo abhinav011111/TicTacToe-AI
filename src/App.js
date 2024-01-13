@@ -154,7 +154,7 @@ function App() {
   let style={
     btn:{
       textAlign:"center",
-      margin:"10px auto",
+      margin:"auto",
       background:"#d7aeff",
       color:"#3e2655",
       fontSize:"larger",
@@ -164,12 +164,12 @@ function App() {
     
 
   return (
-    <div style={{padding: 70 }} >
+    <div style={{padding: 5 }} >
         <Container  maxWidth="sm">
           <Typography variant="h2" align="center"  gutterBottom> TicTacToe </Typography>
           <div>
             <Board board={board} handleClick = {handleClick} />
-            <Typography style={{color:"rgb(226 209 209)", margin:"20px",textAlign:"center"}} variant="h4" component="h4" > {msg} </Typography>
+            <Typography style={{color:"rgb(226 209 209)", margin:"10px",textAlign:"center"}} variant="h4" component="h4" > {msg} </Typography>
           </div>
           
           <div style={{ display: 'flex', justifyContent: 'center' }}>
