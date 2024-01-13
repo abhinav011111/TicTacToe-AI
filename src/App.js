@@ -4,25 +4,32 @@ import Container from '@material-ui/core/Container';
 import Board from './components/Board';
 import Button from '@material-ui/core/Button';
 
-const ai = 'X';
-const human = 'O';
-const SCORE = {
-  X: 1,
-  O: -1,
-  TIE: 0
-};
 const getIJ =  [{i:0,j:0},{i:0,j:1},{i:0,j:2},{i:1,j:0},{i:1,j:1},{i:1,j:2},{i:2,j:0},{i:2,j:1},{i:2,j:2}];
 const checkTurn = "It's Your Turn";
 
 function App() {
   const [board, setBoard] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
   const [msg, setMsg] = useState("It's Your Turn");
-  const [count, setCount] = useState(-1);
+  const [count, setCount] = useState(-2);
   const [countmax, setCountmax] = useState(4);
+  const [ai, setAi] = useState('X');
+  const [human, setHuman] = useState('O');
+  const [SCORE,setScore] = useState({'X': 1, 'O': -1, TIE: 0});
+
+  const startNewGame = () => {
+    setBoard([['', '', ''], ['', '', ''], ['', '', '']]);
+    setMsg("It's Your Turn");
+    setCount(-2);
+    setCountmax(4);
+    setAi('X');
+    setHuman('O');
+    setScore({'X': 1, 'O': -1, TIE: 0});
+    
+  };
 
   const handleClick = (e) => {
     const { i, j } = getIJ[e];
-    if(count===-1 || msg!==checkTurn || board[i][j]!=='') return;
+    if(count===-1 || count===-2 || msg!==checkTurn || board[i][j]!=='') return;
     const newBoard = [...board];
     newBoard[i][j] = human;
     setBoard(newBoard);
@@ -54,13 +61,6 @@ function App() {
     }
   };
   
-
-  const startNewGame = () => {
-    setBoard([['', '', ''], ['', '', ''], ['', '', '']]);
-    setMsg("It's Your Turn");
-    setCount(-1);
-    setCountmax(4);
-  };
 
   const checkWin = (board) => {
     let winner = null;
@@ -135,24 +135,34 @@ function App() {
     return { i: _i, j: _j };
   };
 
+
   const aiTurn = () => {
     const { i, j } = bestMove(board);
     const newBoard = [...board];
     newBoard[i][j] = ai;
-    setBoard(newBoard);
-    setCount(count + 1);
+    
+    setTimeout(() => {
+      setBoard(newBoard);
+      setCount(count + 1);
+      handleWinner();
+  
+      if (count === 9) {
+        setMsg("Start New Game");
+      }
+    }, 2000);
 
-    handleWinner();
-
-    if (count === 9) {
-      setMsg("Start New Game");
-    }
   };
 
   const aiFirst = () =>{
     setCountmax(5);
     setCount(0);
     aiTurn();
+  }
+  const xHuman = () =>{
+    setCount(-1);
+    setHuman('X');
+    setAi('O');
+    setScore({'X': -1, 'O': 1, TIE: 0});
   }
 
   let style={
@@ -178,17 +188,26 @@ function App() {
       </div>      
             
           
-          <div style={{ display:'flex', flexDirection:'column' ,width:'30%', margin:'auto'}}>
-                <div style={{margin:'auto', padding:'60px'}} >
-                <Typography variant="h5" align="center"  gutterBottom> Choose First Move </Typography>
+      <div style={{ display:'flex', flexDirection:'column' ,width:'30%', margin:'auto'}}>
+            <div style={{margin:'auto', padding:'60px'}} >
+
+                {count===-2 && <Typography variant="h5" align="center"  gutterBottom> Choose your weapon: X or O! </Typography>}
+                <div style={{display: 'flex'}}>
+                  {count===-2 && <Button style={style.btn} variant="contained" onClick={()=>{setCount(-1);}} >O</Button>}
+                  {count===-2 &&<Button style={style.btn} variant="contained" onClick={xHuman} >X</Button>}
+                </div>
+
+                {count===-1 && <Typography variant="h5" align="center"  gutterBottom> Choose First Move </Typography>}
                 <div style={{display: 'flex'}}>
                   {count===-1 && <Button style={style.btn} variant="contained" onClick={()=>{setCount(0);}} >Me</Button>}
                   {count===-1 &&<Button style={style.btn} variant="contained" onClick={aiFirst} >AI</Button>}
                 </div>
-                </div>
-  
-              <Button style={style.btn} variant="contained" onClick={startNewGame} >NewGame</Button>
-          </div>
+
+                
+            </div>
+
+          <Button style={style.btn} variant="contained" onClick={startNewGame} >NewGame</Button>
+      </div>
         
     </div>
   )
